@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#315d43">
+  <title>恬梨 · 每日新鲜出炉</title>
+  <link rel="stylesheet" href="./preview/styles.css">
+  <script src="./miniprogram/data/catalog.js" defer></script>
+  <script src="./preview/lucide.js" defer></script>
+  <script src="./preview/app.js" defer></script>
+</head>
+<body>
+  <header class="header"><a class="brand" href="#home" aria-label="恬梨首页"><span class="brand-mark">恬<span>梨</span></span><span class="brand-sub">TIANLI<br>BAKERY</span></a><nav aria-label="主导航"><a href="#home" data-nav="home">首页</a><a href="#products" data-nav="products">产品</a><a href="#stores" data-nav="stores">门店</a><a href="#wallet" data-nav="wallet">我的</a></nav><button class="header-bag icon-button" data-action="cart" aria-label="打开购物袋" title="购物袋"><i data-lucide="shopping-bag"></i><span id="bag-count">0</span></button></header>
+  <main id="app"></main>
+  <footer class="site-footer"><a class="brand" href="#home"><span class="brand-mark">恬梨</span><span class="brand-sub">TIANLI<br>BAKERY</span></a><p>把新鲜，揉进每一天。</p><p class="footer-address">福鼎恒大未来城15栋1单元0109<br><a href="tel:18659384298">18659384298</a></p><span class="footer-small">© 2026 恬梨 TIANLI BAKERY</span></footer>
+  <nav class="mobile-nav" aria-label="底部导航"><a href="#home" data-nav="home"><i data-lucide="house"></i><span>首页</span></a><a href="#products" data-nav="products"><i data-lucide="croissant"></i><span>产品</span></a><a href="#stores" data-nav="stores"><i data-lucide="map-pin"></i><span>门店</span></a><a href="#wallet" data-nav="wallet"><i data-lucide="user-round"></i><span>我的</span></a></nav>
+  <dialog id="modal"></dialog><div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
