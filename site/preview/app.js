@@ -16,7 +16,41 @@
   } catch { state.cart = {}; }
   let toastTimer;
   let modalType = '';
+  let launchAdTimer;
   const route = () => ['home', 'products', 'stores', 'wallet'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home';
+  function closeLaunchAd() {
+    clearInterval(launchAdTimer);
+    const ad = document.getElementById('launch-ad');
+    if (!ad) return;
+    ad.remove();
+    document.body.classList.remove('showing-launch-ad');
+    document.querySelectorAll('[data-ad-inert]').forEach(element => { element.inert = false; element.removeAttribute('data-ad-inert'); });
+    document.querySelector('.header .brand').focus({ preventScroll: true });
+  }
+  function showLaunchAd() {
+    const ad = data.launchAd;
+    if (!ad.enabled || route() !== 'home') return;
+    const key = 'tianliLaunchAd:' + ad.version;
+    try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, 'seen'); } catch { /* Storage may be disabled; navigation still shows the ad only once. */ }
+    const element = document.createElement('section');
+    element.id = 'launch-ad';
+    element.className = 'launch-ad';
+    element.setAttribute('role', 'dialog');
+    element.setAttribute('aria-modal', 'true');
+    element.setAttribute('aria-label', '恬梨品牌开屏广告');
+    element.innerHTML = `<div class="launch-ad-top"><span>恬梨 · 品牌广告</span><button class="launch-ad-skip" data-action="ad-skip" aria-label="跳过开屏广告">跳过 <span id="ad-seconds">${ad.duration}</span>s</button></div><div class="launch-ad-brand"><img class="launch-ad-logo" src="${logo}" alt="恬梨 · 面包甜品"><p>一炉麦香，一点恬甜。</p></div><div class="launch-ad-bottom"><img class="launch-ad-photo" src="${image}" alt="新鲜手作面包"><div class="launch-ad-shade"></div><div class="launch-ad-copy"><h2>${ad.title}</h2><p>${ad.subtitle}</p><button class="launch-ad-cta" data-action="ad-shop">${ad.button} ${icon('arrow-right')}</button><small>${store.name}</small></div></div>`;
+    document.body.appendChild(element);
+    document.body.classList.add('showing-launch-ad');
+    document.querySelectorAll('body > header, body > main, body > footer, body > nav').forEach(background => { background.inert = true; background.setAttribute('data-ad-inert', ''); });
+    paintIcons();
+    element.querySelector('.launch-ad-skip').focus({ preventScroll: true });
+    const deadline = Date.now() + ad.duration * 1000;
+    launchAdTimer = setInterval(() => {
+      const remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+      if (!remaining) closeLaunchAd();
+      else document.getElementById('ad-seconds').textContent = remaining;
+    }, 200);
+  }
   const paintIcons = () => window.lucide.createIcons();
   const cartItems = () => data.products.filter(p => state.cart[p.id]).map(p => ({ ...p, quantity: state.cart[p.id] }));
   const cartCount = () => cartItems().reduce((sum, p) => sum + p.quantity, 0);
@@ -42,7 +76,7 @@
     return `<article class="product"><button class="product-photo" data-action="detail" data-id="${p.id}" aria-label="查看${p.name}"><img src="${productImage(p)}" alt="${p.name}主题示意图" loading="lazy"><span class="badge">${p.label}</span></button><h3><a href="#" data-action="detail" data-id="${p.id}">${p.name}</a></h3><p>${p.weight} · 每日现烤</p><div class="product-bottom"><span class="price"><small>¥</small>${money(p.price)}</span><button class="add" data-action="add" data-id="${p.id}" aria-label="添加${p.name}" title="加入购物袋">${icon('plus')}</button></div></article>`;
   }
   function home() {
-    return `<section class="hero" aria-roledescription="轮播图"><div class="hero-brand"><img src="${logo}" alt="恬梨 · 蛋糕面包"><p>一炉麦香，一点恬甜。</p></div><img class="hero-image" src="${image}" alt="新鲜出炉的可颂与手作欧包"><div class="hero-inner"><div id="hero-copy"></div><div class="hero-dots">${data.banners.map((_, i) => `<button data-action="slide" data-index="${i}" aria-label="第${i + 1}张海报"></button>`).join('')}</div><div class="hero-counter"><button data-action="previous" aria-label="上一张">${icon('chevron-left')}</button><span id="slide-number"></span><button data-action="next" aria-label="下一张">${icon('chevron-right')}</button></div></div></section><div class="promise"><span>${icon('wheat')}每日现烤</span><span>${icon('leaf')}精选原料</span><span>${icon('heart')}用心手作</span></div><div class="container"><div class="quick-links"><button data-action="shop"><span class="quick-icon">${icon('croissant')}</span><div><h3>挑选面包</h3><p>刚出炉的好味道</p></div>${icon('arrow-up-right')}</button><button data-action="wallet"><span class="quick-icon">${icon('wallet')}</span><div><h3>会员充值</h3><p>给日常多一点甜</p></div>${icon('arrow-up-right')}</button><button data-action="stores"><span class="quick-icon">${icon('map-pin')}</span><div><h3>来店看看</h3><p>循着麦香来见面</p></div>${icon('arrow-up-right')}</button></div><section class="section"><div class="section-head"><div><p class="eyebrow">用心手作 · 每日新鲜</p><h2>今日好面包</h2></div><a class="text-link" href="#products">全部产品 ${icon('arrow-right')}</a></div><div class="product-grid">${data.products.map(productCard).join('')}</div></section></div><section class="membership"><div class="container"><div><p class="eyebrow">恬梨会员 · 日常相伴</p><h2>让每一天，多一点甜</h2><p>把喜欢的味道，留在每一个日常里。</p></div><a class="primary" href="#wallet">查看会员礼遇 ${icon('arrow-right')}</a></div></section><div class="container"><section class="section"><div class="section-head"><div><p class="eyebrow">街角的面包香</p><h2>在这里，遇见恬梨</h2></div><a class="text-link" href="#stores">查看门店 ${icon('arrow-right')}</a></div><div class="store-teaser"><div class="store-pin">${icon('map-pin')}<div><h3>${store.name}</h3><p>${store.address}</p><p>${store.hours}</p></div></div><a class="text-link" href="tel:${store.phone}">${icon('phone')} ${store.phone}</a></div></section></div>`;
+    return `<section class="hero" aria-roledescription="轮播图"><div class="hero-brand"><img src="${logo}" alt="恬梨 · 面包甜品"><p>一炉麦香，一点恬甜。</p></div><img class="hero-image" src="${image}" alt="新鲜出炉的可颂与手作欧包"><div class="hero-inner"><div id="hero-copy"></div><div class="hero-dots">${data.banners.map((_, i) => `<button data-action="slide" data-index="${i}" aria-label="第${i + 1}张海报"></button>`).join('')}</div><div class="hero-counter"><button data-action="previous" aria-label="上一张">${icon('chevron-left')}</button><span id="slide-number"></span><button data-action="next" aria-label="下一张">${icon('chevron-right')}</button></div></div></section><div class="promise"><span>${icon('wheat')}每日现烤</span><span>${icon('leaf')}精选原料</span><span>${icon('heart')}用心手作</span></div><div class="container"><div class="quick-links"><button data-action="shop"><span class="quick-icon">${icon('croissant')}</span><div><h3>挑选面包</h3><p>刚出炉的好味道</p></div>${icon('arrow-up-right')}</button><button data-action="wallet"><span class="quick-icon">${icon('wallet')}</span><div><h3>会员充值</h3><p>给日常多一点甜</p></div>${icon('arrow-up-right')}</button><button data-action="stores"><span class="quick-icon">${icon('map-pin')}</span><div><h3>来店看看</h3><p>循着麦香来见面</p></div>${icon('arrow-up-right')}</button></div><section class="section"><div class="section-head"><div><p class="eyebrow">用心手作 · 每日新鲜</p><h2>今日好面包</h2></div><a class="text-link" href="#products">全部产品 ${icon('arrow-right')}</a></div><div class="product-grid">${data.products.map(productCard).join('')}</div></section></div><section class="membership"><div class="container"><div><p class="eyebrow">恬梨会员 · 日常相伴</p><h2>让每一天，多一点甜</h2><p>把喜欢的味道，留在每一个日常里。</p></div><a class="primary" href="#wallet">查看会员礼遇 ${icon('arrow-right')}</a></div></section><div class="container"><section class="section"><div class="section-head"><div><p class="eyebrow">街角的面包香</p><h2>在这里，遇见恬梨</h2></div><a class="text-link" href="#stores">查看门店 ${icon('arrow-right')}</a></div><div class="store-teaser"><div class="store-pin">${icon('map-pin')}<div><h3>${store.name}</h3><p>${store.address}</p><p>${store.hours}</p></div></div><a class="text-link" href="tel:${store.phone}">${icon('phone')} ${store.phone}</a></div></section></div>`;
   }
   function paintSlide() {
     if (route() !== 'home') return;
@@ -104,6 +138,8 @@
     if (!button) return;
     event.preventDefault();
     const { action, id } = button.dataset;
+    if (action === 'ad-skip') closeLaunchAd();
+    if (action === 'ad-shop') { closeLaunchAd(); state.category = data.launchAd.category; location.hash = 'products'; }
     if (action === 'shop') { state.category = button.dataset.category || '全部'; location.hash = 'products'; if (route() === 'products') render(); }
     if (action === 'wallet' || action === 'stores') location.hash = action;
     if (action === 'close') modal.close();
@@ -125,7 +161,17 @@
     if (action === 'copy') { try { await navigator.clipboard.writeText(store.address); toast('门店地址已复制'); } catch { notice('门店地址', store.address); } }
   });
   modal.addEventListener('click', event => { if (event.target === modal) { const bounds = modal.getBoundingClientRect(); if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) modal.close(); } });
-  window.addEventListener('hashchange', () => { modal.close(); render(); window.scrollTo(0, 0); });
+  window.addEventListener('hashchange', () => { closeLaunchAd(); modal.close(); render(); window.scrollTo(0, 0); });
+  document.addEventListener('keydown', event => {
+    if (!document.getElementById('launch-ad')) return;
+    if (event.key === 'Escape') closeLaunchAd();
+    if (event.key === 'Tab') {
+      const buttons = Array.from(document.querySelectorAll('#launch-ad button'));
+      if (event.shiftKey && document.activeElement === buttons[0]) { event.preventDefault(); buttons.at(-1).focus(); }
+      else if (!event.shiftKey && document.activeElement === buttons.at(-1)) { event.preventDefault(); buttons[0].focus(); }
+    }
+  });
   setInterval(() => { if (route() === 'home' && !document.hidden && !modal.open && !matchMedia('(prefers-reduced-motion: reduce)').matches) { state.slide = (state.slide + 1) % 3; paintSlide(); } }, 6000);
   render();
+  showLaunchAd();
 })();

@@ -6,6 +6,7 @@
   return {
     brand: { name: '恬梨', english: 'TIANLI BAKERY', tagline: '把新鲜，揉进每一天。', isSample: false },
     image: '/assets/bakery.jpg',
+    launchAd: { enabled: true, version: 'tianli-bread-dessert-v1', duration: 3, title: '让日常，多一点恬甜', subtitle: '手作面包 · 温柔甜品', button: '挑选今日新鲜', category: '全部' },
     categories: ['全部', '经典可颂', '手作欧包', '甜蜜点心'],
     banners: [
       { title: '恬梨面包\n新鲜每一天', subtitle: '每日新鲜出炉 · 手作的温度', label: 'FRESHLY BAKED, EVERY DAY', position: 'center', category: '全部' },

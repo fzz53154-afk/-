@@ -2,7 +2,9 @@
 
 ## 手机网页预览
 
-[打开手机网页预览](https://htmlpreview.github.io/?https://raw.githubusercontent.com/fzz53154-afk/-/preview-download/tianli-mobile-preview.html)
+[打开手机网页预览](https://htmlpreview.github.io/?https://raw.githubusercontent.com/fzz53154-afk/-/preview-download/tianli-mobile-preview-20261009.html)
+
+新版 Logo 使用“面包 · 甜品”文字。首页新增 3 秒品牌开屏广告，可立即跳过或点击进入产品页；同一浏览器标签页会话只展示一次。
 
 新版采用用户提供的恬梨 Logo，整体使用奶油白、可可棕和手作风格。电脑上显示居中的手机宽度，手机上铺满屏幕。保留海报轮播、产品、购物袋、会员充值入口、门店地址和到店自提信息确认。
 
