@@ -97,6 +97,8 @@
     showModal(`${modalHead('线上下单暂未开放')}<p class="notice-text">请联系恬梨确认商品和取货时间，购物袋已为你保留。当前未生成订单，也未扣款。</p><a class="primary" href="tel:${store.phone}">${icon('phone')}联系门店 · ${store.phone}</a>`);
   });
   document.addEventListener('click', async event => {
+    const anchor = event.target.closest('a[href^="#"]');
+    if (anchor && !anchor.dataset.action) { event.preventDefault(); location.hash = anchor.getAttribute('href').slice(1); return; }
     const button = event.target.closest('[data-action]');
     if (!button) return;
     event.preventDefault();

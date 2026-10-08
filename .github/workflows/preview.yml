@@ -1,9 +1,6 @@
 name: Publish Tianli web preview
 
 on:
-  push:
-    branches: [preview-download]
-    paths: ['site/**', '.github/workflows/preview.yml']
   workflow_dispatch:
 
 permissions:
