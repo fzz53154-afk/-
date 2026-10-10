@@ -1,5 +1,11 @@
 # 恬梨预览发布包
 
+## 小程序自动打印版本
+
+[下载完整小程序与云打印项目](https://raw.githubusercontent.com/fzz53154-afk/-/preview-download/tianli-miniprogram-cloud-print-20261010.zip)
+
+已提供云开发订单、服务端价格和库存校验、打印任务、飞鹅云适配器以及顾客 / 门店订单页面。[配置说明](CLOUD-PRINTING.md)。当前采用提交自提订单后打印、到店付款；需要门店真实 AppID、云开发环境和联网打印机才能运行。网页预览不会下单或打印，尚未完成实物联调。
+
 ## 手机网页预览
 
 [打开手机网页预览](https://htmlpreview.github.io/?https://raw.githubusercontent.com/fzz53154-afk/-/preview-download/tianli-mobile-preview-20261009.html)
